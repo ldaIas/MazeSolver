@@ -2,6 +2,8 @@
 // Created by Admin on 6/14/2020.
 //
 
+#include <string>
+using namespace std;
 #ifndef MAZESOLVER_HEADERS_H
 #define MAZESOLVER_HEADERS_H
 
@@ -21,11 +23,18 @@ public:
     //Get the ASCII character
     char getASCII();
 
+    void setType(string);
+
+    string getType();
+
 
 private:
 
     //The cells representation in ASCII characters
     char ASCIIrep;
+
+    //What type it is
+    string cellType;
 
 };
 
@@ -40,6 +49,9 @@ public:
     //Generate the maze's structure
     void generateMaze();
 
+    //Print maze to console
+    void printMaze();
+
 
 private:
     //Add private variables/methods
@@ -52,15 +64,32 @@ private:
 
     //The array that holds the maze size
     //Accessed: x, y
-    Cell maze[xDimension][yDimension];
+    Cell* maze[xDimension][yDimension];
+
+    //ASCII character respresentations for each cell type
+    char wallChar = '|';
+    char pathChar = '_';
+    char startChar = '*';
+    char endChar = 'E';
+
+    //Names for cell types
+    string pathString = "path";
+    string wallString = "wall";
+
 
     /*
     Private methods
     */
 
     //Generates the solution path through the maze
-    //For the purpose of this program, all mazes will start at (0,0) and end at (xDim, yDim)
+    //For the purpose of this program, all mazes will start at (1,1) and end at (xDim-1, yDim-1)
     void generateSolution();
+
+    //Gets a new direction for the maze path to go
+    bool getPathDirection(int&, int&);
+
+    //Checks surroundings from input coords looking for the type of cell
+    bool checkNewSurroundings(int, int, char);
 
 };
 

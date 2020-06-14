@@ -19,3 +19,7 @@ Cell::Cell(char c) {
 void Cell::setASCII(char c) { ASCIIrep = c; };
 
 char Cell::getASCII() { return ASCIIrep; };
+
+void Cell::setType(string s) {cellType = s; }
+
+string Cell::getType() {return cellType;}
