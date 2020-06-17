@@ -3,6 +3,8 @@
 //
 
 #include <string>
+#include <vector>
+#include <set>
 using namespace std;
 #ifndef MAZESOLVER_HEADERS_H
 #define MAZESOLVER_HEADERS_H
@@ -27,6 +29,13 @@ public:
 
     string getType();
 
+    //Set their position
+    void setPosition(int, int);
+
+    //Get their positions
+    int getPositionX();
+    int getPositionY();
+
 
 private:
 
@@ -35,6 +44,10 @@ private:
 
     //What type it is
     string cellType;
+
+    //Their individual position
+    int posX;
+    int posY;
 
 };
 
@@ -66,6 +79,9 @@ private:
     //Accessed: x, y
     Cell* maze[xDimension][yDimension];
 
+    //This vector holds every path cell
+    vector<Cell*> paths;
+
     //ASCII character respresentations for each cell type
     char wallChar = '|';
     char pathChar = '_';
@@ -90,7 +106,6 @@ private:
 
     //Checks surroundings from input coords looking for the type of cell
     bool checkNewSurroundings(int, int, char);
-
 };
 
 

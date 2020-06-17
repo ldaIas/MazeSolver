@@ -23,3 +23,11 @@ char Cell::getASCII() { return ASCIIrep; };
 void Cell::setType(string s) {cellType = s; }
 
 string Cell::getType() {return cellType;}
+
+void Cell::setPosition(int x, int y) {
+    posX = x;
+    posY = y;
+}
+
+int Cell::getPositionX() { return posX; }
+int Cell::getPositionY() { return posY; }
