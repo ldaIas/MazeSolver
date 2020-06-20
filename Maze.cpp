@@ -7,7 +7,7 @@
 #include <cstdlib>
 #include <ctime>
 #include <set>
-#include <queue>
+#include "amp_graphics.h"
 using namespace std;
 
 //Default constructor
@@ -57,13 +57,20 @@ void Maze::generateSolution() {
         validMove = getPathDirection(xPos, yPos);
         //If the last made path is next to the end, stop drawing
         if (checkNewSurroundings(xPos, yPos, endChar)) break;
-            //If not, and no other "move" for the path is valid, start a new path branch and add a new path directly
-            //touching the end to allow paths to meet
+        //If not, and no other "move" for the path is valid, start a new path branch and add a new path directly
+        //touching the end to allow paths to meet
         else if (!validMove) {
-            int randPathBranch = rand() % paths.size();
+            cout << "not valid move else entered" << endl;
+            int randPathBranch = rand() % (paths.size() - 1);
             xPos = paths.at(randPathBranch)->getPositionX();
             yPos = paths.at(randPathBranch)->getPositionY();
             validMove = true;
+            expandFromCell(findCell(endChar));
+            resetTypes();
+            bool verified = verifySolution(findCell(endChar));
+            resetTypes();
+            cout << "Verified value: " << verified << endl;
+            if (verified) break;
 
         }
     }
@@ -105,7 +112,7 @@ bool Maze::getPathDirection(int& x, int& y) {
                 break;
             case 1:
                 //Go down
-                if((y+2 == yDimension)) break;
+                if((y+1 == yDimension - 2)) break;
                 else if( (maze[x][y+2]->getType() == pathString) || (maze[x][y+1]->getType() == pathString) ) break;
                 else if (    (maze[x - 1][y + 1]->getASCII() == pathChar)
                           || (maze[x + 1][y + 1]->getASCII() == pathChar)
@@ -135,7 +142,7 @@ bool Maze::getPathDirection(int& x, int& y) {
                 break;
             case 3:
                 //Go right
-                if((x+1 == xDimension )) break;
+                if((x+1 == xDimension - 2)) break;
                 else if( (maze[x+2][y]->getType() == pathString) || (maze[x+1][y]->getType() == pathString) ) break;
                 else if (    (maze[x + 2][y]->getASCII() == pathChar)
                           || (maze[x + 1][y - 1]->getASCII() == pathChar)
@@ -177,17 +184,105 @@ void Maze::printMaze(){
 }
 
 //Make a path spiraling out from a certain cell
-/*void Maze::expandFromCell(int x, int y){
-    queue<Cell*> cells;
+bool Maze::expandFromCell( Cell* cell, int x, int y){
+    cout << "expand from cell entered" << endl;
 
-    if(x+1 != xDimension - 2) cells.push(maze[x+1][y]);
-    if(x-1 != xDimension - 1) cells.push(maze[x-1][y]);
-    if(y+1 != yDimension - 2) cells.push(maze[x][y+1]);
-    if(y-1 != xDimension - 1) cells.push(maze[x][y-1]);
+    if(cell != nullptr) {
+        x = cell->getPositionX();
+        y = cell->getPositionY();
+    }
 
+    cout << "Cell coords: x = " << x << "   y: " << y << endl;
 
+    if(cell->getType() == wallString){
+        cell->setType("traversed");
+        cell->setASCII(pathChar);
+        return true;
+    }
+    else cell->setType("traversed");
 
+    if(( x+1 < xDimension - 2 ) && ( maze[x+1][y]->getType() != "traversed" )) {
+        if (expandFromCell(maze[x + 1][y])) return true;
+    }
 
+    if(( x-1 > 0 ) && ( maze[x-1][y]->getType() != "traversed" )) {
+        if(expandFromCell(maze[x-1][y])) return true;
+    }
 
+    if(( y+1 < yDimension - 2 ) && ( maze[x][y+1]->getType() != "traversed" )) {
+        if(expandFromCell(maze[x][y+1])) return true;
+    }
+    if(( y-1 > 0 )  && ( maze[x][y-1]->getType() != "traversed" )) {
+        if( expandFromCell(maze[x][y-1])) return true;
+    }
+    return false;
+}
 
-}*/
+//Finds a cell by character type. Returns the start cell by default. If improper maze made, returns the last cell in the array
+Cell* Maze::findCell(char type = ' ') {
+
+    if(type == ' ') type = startChar;
+
+    for(int x = 0; x < xDimension; x++){
+        for(int y = 0; y < yDimension; y++){
+            if(maze[x][y]->getASCII() == type) return maze[x][y];
+        }
+    }
+    return maze[xDimension-1][yDimension-1];
+
+}
+
+//Verify the solution of the maze. Temporarily changes path type to 'checked'
+bool Maze::verifySolution(Cell* cell){
+
+    cout << "Cell's char: " << cell->getASCII() << endl;
+    cout << "Start's char: " << findCell(startChar)->getASCII() << endl;
+    if(cell->getASCII() == findCell(startChar)->getASCII()){
+        cell->setASCII('@');
+        return true;
+    }
+    else{
+        cell->setASCII('@');
+        //Check the cell one above this space
+        if(( cell->getPositionY() > 1 ) && ( maze[cell->getPositionX()][cell->getPositionY()-1]->getType() == pathString )) {
+            cell->setType("checked");
+            Cell* newCell = maze[cell->getPositionX()][cell->getPositionY()-1];
+            return verifySolution(newCell);
+        }
+
+        //Check the cell one below this space
+        if(( cell->getPositionY() < yDimension - 2 ) && ( maze[cell->getPositionX()][cell->getPositionY()+1]->getType() == pathString )) {
+            cell->setType("checked");
+            Cell* newCell = maze[cell->getPositionX()][cell->getPositionY()+1];
+            return verifySolution(newCell);
+        }
+
+        //Check the cell one left this space
+        if(( cell->getPositionX() > 1 ) && ( maze[cell->getPositionX()-1][cell->getPositionY()]->getType() == pathString )) {
+            cell->setType("checked");
+            Cell* newCell = maze[cell->getPositionX()-1][cell->getPositionY()];
+            return verifySolution(newCell);
+        }
+
+        //Check the cell one right this space
+        if(( cell->getPositionX() < xDimension - 2 ) && ( maze[cell->getPositionX()+1][cell->getPositionY()]->getType() == pathString )) {
+            cell->setType("checked");
+            Cell* newCell = maze[cell->getPositionX()+1][cell->getPositionY()];
+            return verifySolution(newCell);
+        }
+    }
+    return false;
+}
+
+void Maze::resetTypes() {
+
+    for(int x = 0; x < xDimension; x++){
+        for(int y = 0; y < yDimension; y++){
+            if(( maze[x][y]->getType() == "checked" ) || (maze[x][y]->getType() == "traversed" )) maze[x][y]->setType(pathString);
+            if( maze[x][y]->getASCII() == '@' ) maze[x][y]->setASCII(pathChar);
+            maze[startX][startY]->setASCII(startChar);
+            maze[endX][endY]->setASCII(endChar);
+        }
+    }
+
+}
