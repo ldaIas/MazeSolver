@@ -1,5 +1,6 @@
 #include "Headers.h"
-#include <iostream>
+#define SDL_MAIN_HANDLED
+#include <SDL2/SDL.h>
 using namespace std;
 
 int main() {

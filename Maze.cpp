@@ -7,7 +7,6 @@
 #include <cstdlib>
 #include <ctime>
 #include <set>
-#include "amp_graphics.h"
 using namespace std;
 
 //Default constructor
