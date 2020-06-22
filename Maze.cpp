@@ -233,12 +233,13 @@ Cell* Maze::findCell(char type = ' ') {
 
 //Verify the solution of the maze. Temporarily changes path type to 'checked'
 bool Maze::verifySolution(Cell* cell){
-
+    printMaze();
     cout << "Cell's char: " << cell->getASCII() << endl;
     cout << "Start's char: " << findCell(startChar)->getASCII() << endl;
+    bool verified = false;
     if(cell->getASCII() == findCell(startChar)->getASCII()){
         cell->setASCII('@');
-        return true;
+        verified = true;
     }
     else{
         cell->setASCII('@');
@@ -246,31 +247,31 @@ bool Maze::verifySolution(Cell* cell){
         if(( cell->getPositionY() > 1 ) && ( maze[cell->getPositionX()][cell->getPositionY()-1]->getType() == pathString )) {
             cell->setType("checked");
             Cell* newCell = maze[cell->getPositionX()][cell->getPositionY()-1];
-            return verifySolution(newCell);
+            verified = verifySolution(newCell);
         }
 
         //Check the cell one below this space
         if(( cell->getPositionY() < yDimension - 2 ) && ( maze[cell->getPositionX()][cell->getPositionY()+1]->getType() == pathString )) {
             cell->setType("checked");
             Cell* newCell = maze[cell->getPositionX()][cell->getPositionY()+1];
-            return verifySolution(newCell);
+            verified = verifySolution(newCell);
         }
 
         //Check the cell one left this space
         if(( cell->getPositionX() > 1 ) && ( maze[cell->getPositionX()-1][cell->getPositionY()]->getType() == pathString )) {
             cell->setType("checked");
             Cell* newCell = maze[cell->getPositionX()-1][cell->getPositionY()];
-            return verifySolution(newCell);
+            verified = verifySolution(newCell);
         }
 
         //Check the cell one right this space
         if(( cell->getPositionX() < xDimension - 2 ) && ( maze[cell->getPositionX()+1][cell->getPositionY()]->getType() == pathString )) {
             cell->setType("checked");
             Cell* newCell = maze[cell->getPositionX()+1][cell->getPositionY()];
-            return verifySolution(newCell);
+            verified = verifySolution(newCell);
         }
     }
-    return false;
+    return verified;
 }
 
 void Maze::resetTypes() {
