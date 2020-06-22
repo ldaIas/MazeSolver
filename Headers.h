@@ -36,6 +36,9 @@ public:
     int getPositionX();
     int getPositionY();
 
+    //Get dimensions
+    int getPixelWidth();
+    int getPixelHeight();
 
 private:
 
@@ -52,6 +55,10 @@ private:
     //Where the cell originated from, if it's a path (start or end)
     char origin;
 
+    //Dimensions of the cell for displaying
+    int pixelWidth = 10;
+    int pixelHeight = 10;
+
 };
 
 class Maze
@@ -67,6 +74,10 @@ public:
 
     //Print maze to console
     void printMaze();
+
+    //Get dimensions of maze
+    int getMazeWidth();
+    int getMazeHeight();
 
 
 private:
@@ -91,6 +102,8 @@ private:
 
     //This vector holds every path cell
     vector<Cell*> paths;
+
+
 
     //ASCII character representations for each cell type
     char wallChar = '|';

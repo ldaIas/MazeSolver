@@ -31,3 +31,6 @@ void Cell::setPosition(int x, int y) {
 
 int Cell::getPositionX() { return posX; }
 int Cell::getPositionY() { return posY; }
+
+int Cell::getPixelWidth() { return pixelWidth; }
+int Cell::getPixelHeight() { return pixelHeight; }

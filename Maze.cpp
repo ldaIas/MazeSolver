@@ -286,3 +286,19 @@ void Maze::resetTypes() {
     }
 
 }
+
+int Maze::getMazeWidth() {
+    if(maze[0][0] != nullptr) {
+        int cellWidth = maze[0][0]->getPixelWidth();
+        return cellWidth * (xDimension);
+    }
+    else return -1;
+}
+
+int Maze::getMazeHeight() {
+    if(maze[0][0] != nullptr) {
+        int cellHeight = maze[0][0]->getPixelWidth();
+        return cellHeight * (yDimension);
+    }
+    else return -1;
+}
