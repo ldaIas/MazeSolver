@@ -248,6 +248,7 @@ bool Maze::verifySolution(Cell* cell){
             cell->setType("checked");
             Cell* newCell = maze[cell->getPositionX()][cell->getPositionY()-1];
             verified = verifySolution(newCell);
+            if(verified) return verified;
         }
 
         //Check the cell one below this space
@@ -255,6 +256,7 @@ bool Maze::verifySolution(Cell* cell){
             cell->setType("checked");
             Cell* newCell = maze[cell->getPositionX()][cell->getPositionY()+1];
             verified = verifySolution(newCell);
+            if(verified) return verified;
         }
 
         //Check the cell one left this space
@@ -262,6 +264,7 @@ bool Maze::verifySolution(Cell* cell){
             cell->setType("checked");
             Cell* newCell = maze[cell->getPositionX()-1][cell->getPositionY()];
             verified = verifySolution(newCell);
+            if(verified) return verified;
         }
 
         //Check the cell one right this space
@@ -269,6 +272,7 @@ bool Maze::verifySolution(Cell* cell){
             cell->setType("checked");
             Cell* newCell = maze[cell->getPositionX()+1][cell->getPositionY()];
             verified = verifySolution(newCell);
+            if(verified) return verified;
         }
     }
     return verified;
@@ -297,8 +301,15 @@ int Maze::getMazeWidth() {
 
 int Maze::getMazeHeight() {
     if(maze[0][0] != nullptr) {
-        int cellHeight = maze[0][0]->getPixelWidth();
+        int cellHeight = maze[0][0]->getPixelHeight();
         return cellHeight * (yDimension);
     }
     else return -1;
+}
+
+int Maze::getSizeX() { return xDimension; }
+int Maze::getSizeY() { return yDimension; }
+
+Cell* Maze::getCell(int x, int y){
+    return maze[x][y];
 }

@@ -2,6 +2,7 @@
 #include <SDL2/SDL.h>
 #include <iostream>
 #include <string>
+#include <vector>
 using namespace std;
 
 int createLoadingScreen() {
@@ -51,10 +52,39 @@ int createLoadingScreen() {
     return 0;
 }
 
+//Convert the cells in the maze to rectangles to be rendered
+vector<vector <SDL_Rect*>> cellsToRect(Maze* maze){
+
+    if(maze != nullptr) {
+        vector<vector<SDL_Rect *>> cellsAsRectangles;
+
+        for (int x = 0; x < maze->getSizeX(); x++) {
+            vector<SDL_Rect *> rectCols;
+            for (int y = 0; y < maze->getSizeY(); y++) {
+                SDL_Rect *rect = new SDL_Rect();
+                rect->x = maze->getCell(x, y)->getPixelWidth() * x;
+                rect->y = maze->getCell(x, y)->getPixelHeight() * y;
+                rect->w = maze->getCell(x, y)->getPixelWidth();
+                rect->h = maze->getCell(x, y)->getPixelHeight();
+                rectCols.push_back(rect);
+            }
+            cellsAsRectangles.push_back(rectCols);
+        }
+    }
+    else{
+        //TODO: Do something
+    }
+}
+
+
 int displayMaze(Maze* maze){
 
+    int mazeWidth = maze->getMazeWidth();
+    int mazeHeight = maze->getMazeHeight();
+    if(mazeWidth < 0 || mazeHeight < 0) return 60;
+
     //Create the window to display the maze
-    SDL_Window* win = SDL_CreateWindow("Maze Solver", 100, 100, maze->getMazeWidth(), maze->getMazeHeight(), SDL_WINDOW_SHOWN);
+    SDL_Window* win = SDL_CreateWindow("Maze Solver", 100, 100, mazeWidth, mazeHeight, SDL_WINDOW_SHOWN);
     if(win == nullptr){
         cout << "SDL_CreateWindow Error: " << SDL_GetError << endl;
         SDL_Quit();
@@ -70,10 +100,30 @@ int displayMaze(Maze* maze){
         return 7;
     }
 
+    //Get all the cells as rectangles in a vector
+    vector< vector<SDL_Rect*>> cells = cellsToRect(maze);
 
+    SDL_Surface *surface = SDL_GetWindowSurface(win);
+    for(int x = 0; x < cells.size() - 1; x++){
+        vector<SDL_Rect*> currCol = cells.at(x);
+        for(int y = 0; y < currCol.size() - 1; y++){
 
-
+            //If the current cell is a wall, draw it black
+            if(maze->getCell(x, y)->getType() == "wall"){
+                SDL_FillRect(surface, currCol.at(y), SDL_MapRGB(surface->format, 0, 0, 0));
+                SDL_RenderDrawRect(ren, currCol.at(y));
+                SDL_RenderPresent(ren);
+            }
+            if(maze->getCell(x, y)->getType() == "path"){
+                SDL_FillRect(surface, currCol.at(y), SDL_MapRGB(surface->format, 255, 255, 255));
+                SDL_RenderDrawRect(ren, currCol.at(y));
+                SDL_RenderPresent(ren);
+            }
+        }
+    }
+    return 0;
 }
+
 
 
 
@@ -95,13 +145,13 @@ int main(int argc, char* args[]) {
     Maze maze;
     maze.generateMaze();
 
-    /*
+
     int displayMazeCode = displayMaze(&maze);
     if( displayMazeCode != 0){
         cout << "Error while creating maze window: " << displayMazeCode << endl;
         return displayMazeCode;
     }
-    */
+
 
 	return 0;
 }

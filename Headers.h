@@ -75,9 +75,16 @@ public:
     //Print maze to console
     void printMaze();
 
-    //Get dimensions of maze
+    //Get pixel dimensions of maze
     int getMazeWidth();
     int getMazeHeight();
+
+    //Get actual sizes of maze
+    int getSizeX();
+    int getSizeY();
+
+    //Get cell at location
+    Cell* getCell(int, int);
 
 
 private:
@@ -102,8 +109,6 @@ private:
 
     //This vector holds every path cell
     vector<Cell*> paths;
-
-
 
     //ASCII character representations for each cell type
     char wallChar = '|';
