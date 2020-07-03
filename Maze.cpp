@@ -25,12 +25,12 @@ void Maze::generateMaze() {
         }
     }
 
-    printMaze();
+    //printMaze();
 
     //Generate the solution path
     generateSolution();
 
-    printMaze();
+    //printMaze();
 }
 
 //Generates the solution path
@@ -40,26 +40,26 @@ void Maze::generateSolution() {
     maze[xPos][yPos]->setASCII(startChar);
     maze[xPos][yPos]->setType(pathString);
 
-    cout << "Start generated" << endl;
-    printMaze();
+    //cout << "Start generated" << endl;
+    //printMaze();
 
     maze[xDimension - 2][yDimension - 2]->setASCII(endChar);
     maze[xDimension - 2][yDimension - 2]->setType(pathString);
-    cout << "End generated" << endl;
+    //cout << "End generated" << endl;
 
 
     bool validMove = true;
     srand(time(NULL));
     while (validMove) {
-        cout << "xPos: " << xPos << "    yPos: " << yPos;
-        printMaze();
+        //cout << "xPos: " << xPos << "    yPos: " << yPos;
+        //printMaze();
         validMove = getPathDirection(xPos, yPos);
         //If the last made path is next to the end, stop drawing
         if (checkNewSurroundings(xPos, yPos, endChar)) break;
         //If not, and no other "move" for the path is valid, start a new path branch and add a new path directly
         //touching the end to allow paths to meet
         else if (!validMove) {
-            cout << "not valid move else entered" << endl;
+            //cout << "not valid move else entered" << endl;
             int randPathBranch = rand() % (paths.size() - 1);
             xPos = paths.at(randPathBranch)->getPositionX();
             yPos = paths.at(randPathBranch)->getPositionY();
@@ -68,7 +68,7 @@ void Maze::generateSolution() {
             resetTypes();
             bool verified = verifySolution(findCell(endChar));
             resetTypes();
-            cout << "Verified value: " << verified << endl;
+            // << "Verified value: " << verified << endl;
             if (verified) break;
 
         }
@@ -84,7 +84,7 @@ bool Maze::getPathDirection(int& x, int& y) {
 
         //Roll a new number. If it's already been rolled, start a new loop
         int dirNum = rand() % 4;
-        cout << "num rolled: " << dirNum << endl;
+        // << "num rolled: " << dirNum << endl;
         if(numsRolled.find(0) != numsRolled.end()
             && numsRolled.find(1) != numsRolled.end()
             && numsRolled.find(2) != numsRolled.end()
@@ -92,7 +92,7 @@ bool Maze::getPathDirection(int& x, int& y) {
         else if(numsRolled.find(dirNum) != numsRolled.end()) continue;
         numsRolled.insert(dirNum);
 
-        cout << "num chosen: " << dirNum << endl;
+        //cout << "num chosen: " << dirNum << endl;
         switch (dirNum) {
             case 0:
                 //Go up
@@ -172,26 +172,26 @@ bool Maze::checkNewSurroundings(int x, int y, char type){
 
 //Prints the maze to console
 void Maze::printMaze(){
-    cout << endl;
+    // << endl;
     for(int y = 0; y < yDimension; y++){
         for(int x = 0; x < xDimension; x++){
             cout << maze[x][y]->getASCII() << " ";
             if(x == xDimension - 1) cout << endl;
         }
     }
-    cout << endl;
+    //cout << endl;
 }
 
 //Make a path spiraling out from a certain cell
 bool Maze::expandFromCell( Cell* cell, int x, int y){
-    cout << "expand from cell entered" << endl;
+    //cout << "expand from cell entered" << endl;
 
     if(cell != nullptr) {
         x = cell->getPositionX();
         y = cell->getPositionY();
     }
 
-    cout << "Cell coords: x = " << x << "   y: " << y << endl;
+    //cout << "Cell coords: x = " << x << "   y: " << y << endl;
 
     if(cell->getType() == wallString){
         cell->setType("traversed");
@@ -233,9 +233,9 @@ Cell* Maze::findCell(char type = ' ') {
 
 //Verify the solution of the maze. Temporarily changes path type to 'checked'
 bool Maze::verifySolution(Cell* cell){
-    printMaze();
-    cout << "Cell's char: " << cell->getASCII() << endl;
-    cout << "Start's char: " << findCell(startChar)->getASCII() << endl;
+    //printMaze();
+    //cout << "Cell's char: " << cell->getASCII() << endl;
+    //cout << "Start's char: " << findCell(startChar)->getASCII() << endl;
     bool verified = false;
     if(cell->getASCII() == findCell(startChar)->getASCII()){
         cell->setASCII('@');
