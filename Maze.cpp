@@ -313,3 +313,7 @@ int Maze::getSizeY() { return yDimension; }
 Cell* Maze::getCell(int x, int y){
     return maze[x][y];
 }
+
+char Maze::getStartChar() { return startChar; }
+char Maze::getEndChar() { return endChar; }
+char Maze::getPathChar() { return pathChar; }

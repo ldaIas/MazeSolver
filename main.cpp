@@ -3,6 +3,9 @@
 #include <iostream>
 #include <string>
 #include <vector>
+
+void runSim(SDL_Window *pWindow, SDL_Renderer *pRenderer);
+
 using namespace std;
 
 int createLoadingScreen() {
@@ -54,10 +57,8 @@ int createLoadingScreen() {
 
 //Convert the cells in the maze to rectangles to be rendered
 vector<vector <SDL_Rect*>> cellsToRect(Maze* maze){
-
+    vector<vector<SDL_Rect *>> cellsAsRectangles;
     if(maze != nullptr) {
-        vector<vector<SDL_Rect *>> cellsAsRectangles;
-
         for (int x = 0; x < maze->getSizeX(); x++) {
             vector<SDL_Rect *> rectCols;
             for (int y = 0; y < maze->getSizeY(); y++) {
@@ -71,9 +72,7 @@ vector<vector <SDL_Rect*>> cellsToRect(Maze* maze){
             cellsAsRectangles.push_back(rectCols);
         }
     }
-    else{
-        //TODO: Do something
-    }
+    return cellsAsRectangles;
 }
 
 
@@ -103,27 +102,80 @@ int displayMaze(Maze* maze){
     //Get all the cells as rectangles in a vector
     vector< vector<SDL_Rect*>> cells = cellsToRect(maze);
 
+    if(cells.size() == 0) {
+        perror("Failed to create vector of cells");
+        return 8;
+    }
+
     SDL_Surface *surface = SDL_GetWindowSurface(win);
-    for(int x = 0; x < cells.size() - 1; x++){
-        vector<SDL_Rect*> currCol = cells.at(x);
-        for(int y = 0; y < currCol.size() - 1; y++){
+    SDL_RenderClear(ren);
+    for(int x = 0; x < cells.size(); x++){
+        for(int y = 0; y < cells.at(x).size(); y++){
 
             //If the current cell is a wall, draw it black
             if(maze->getCell(x, y)->getType() == "wall"){
-                SDL_FillRect(surface, currCol.at(y), SDL_MapRGB(surface->format, 0, 0, 0));
-                SDL_RenderDrawRect(ren, currCol.at(y));
-                SDL_RenderPresent(ren);
+                SDL_SetRenderDrawColor(ren, 100, 100, 100, 255);
+                int fillRectStatus = SDL_RenderFillRect(ren, cells.at(x).at(y));
+                if(fillRectStatus != 0) {
+                    string errMsg = "Failed to fill rectangle at " + to_string(x) + " " + to_string(y) + ": " + SDL_GetError();
+                    cout << errMsg << endl;
+                    return 9;
+                }
             }
+
+            //If it is a path, draw it white
             if(maze->getCell(x, y)->getType() == "path"){
-                SDL_FillRect(surface, currCol.at(y), SDL_MapRGB(surface->format, 255, 255, 255));
-                SDL_RenderDrawRect(ren, currCol.at(y));
-                SDL_RenderPresent(ren);
+
+                //If the cell is the start of the maze, make it a light green
+                if(maze->getCell(x, y)->getASCII() == maze->getStartChar()){
+                    SDL_SetRenderDrawColor(ren, 0, 255, 102, 255);
+                    int fillRectStatus = SDL_RenderFillRect(ren, cells.at(x).at(y));
+                    if(fillRectStatus != 0) {
+                        string errMsg = "Failed to fill rectangle at " + to_string(x) + " " + to_string(y) + ": " + SDL_GetError();
+                        cout << errMsg << endl;
+                        return 9;
+                    }
+                }
+
+                //If the cell is the end of the maze, make it a red
+                if(maze->getCell(x, y)->getASCII() == maze->getEndChar()){
+                    SDL_SetRenderDrawColor(ren, 255, 0, 0, 255);
+                    int fillRectStatus = SDL_RenderFillRect(ren, cells.at(x).at(y));
+                    if(fillRectStatus != 0) {
+                        string errMsg = "Failed to fill rectangle at " + to_string(x) + " " + to_string(y) + ": " + SDL_GetError();
+                        cout << errMsg << endl;
+                        return 9;
+                    }
+                }
+
+                //If the cell is a normal path, make it white
+                if(maze->getCell(x, y)->getASCII() == maze->getPathChar()){
+                    SDL_SetRenderDrawColor(ren, 255, 255, 255, 255);
+                    int fillRectStatus = SDL_RenderFillRect(ren, cells.at(x).at(y));
+                    if(fillRectStatus != 0) {
+                        string errMsg = "Failed to fill rectangle at " + to_string(x) + " " + to_string(y) + ": " + SDL_GetError();
+                        cout << errMsg << endl;
+                        return 9;
+                    }
+                }
             }
         }
+        SDL_RenderPresent(ren);
     }
+    SDL_RenderPresent(ren);
+
+    runSim(win, ren);
     return 0;
 }
 
+/*void runSim(SDL_Window *win, SDL_Renderer *ren) {
+
+    bool running = true;
+    while(running){
+
+    }
+
+}*/
 
 
 
@@ -151,6 +203,7 @@ int main(int argc, char* args[]) {
         cout << "Error while creating maze window: " << displayMazeCode << endl;
         return displayMazeCode;
     }
+
 
 
 	return 0;

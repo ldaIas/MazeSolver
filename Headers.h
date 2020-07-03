@@ -56,8 +56,8 @@ private:
     char origin;
 
     //Dimensions of the cell for displaying
-    int pixelWidth = 10;
-    int pixelHeight = 10;
+    int pixelWidth = 30;
+    int pixelHeight = 30;
 
 };
 
@@ -85,6 +85,11 @@ public:
 
     //Get cell at location
     Cell* getCell(int, int);
+
+    //Get characters for different cells
+    char getStartChar();
+    char getEndChar();
+    char getPathChar();
 
 
 private:
