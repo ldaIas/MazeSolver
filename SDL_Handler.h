@@ -12,7 +12,7 @@ class SDL_Handler{
 public:
 
     //Load the maze into the handler
-    void loadMaze(Maze* maze);
+    void loadMaze();
 
     //Initialize SDL Window
     int initialize();
@@ -24,7 +24,13 @@ public:
     int displayMaze();
 
     //Run the simulation
-    void runSim();
+    bool runSim();
+
+    //Close generating window
+    void closeGenWindow();
+
+    //Generate the maze to be used
+    void generateMaze();
 
 private:
 
@@ -42,6 +48,7 @@ private:
     //Vector of cells to draw and its generation method
     vector<vector <SDL_Rect*>> cells;
     void cellsToRect();
+    void clearCellsVector();
 
 
 };

@@ -30,8 +30,9 @@ void Maze::generateMaze() {
     //Generate the solution path
     generateSolution();
 
-    //printMaze();
+    printMaze();
 }
+
 
 //Generates the solution path
 void Maze::generateSolution() {

@@ -98,8 +98,8 @@ private:
     Private variables
     */
     //The sizes of the array
-    const static int xDimension = 15;
-    const static int yDimension = 10;
+    const static int xDimension = 30;
+    const static int yDimension = 25;
 
     //Positions of the start and end points
     int startX = 1;

@@ -22,10 +22,7 @@ int main(int argc, char* args[]) {
         return loadingCode;
     }
 
-    Maze maze;
-    maze.generateMaze();
-
-    SDL_Handle.loadMaze(&maze);
+    SDL_Handle.generateMaze();
 
     int displayMazeCode = SDL_Handle.displayMaze();
     if( displayMazeCode != 0){
@@ -33,7 +30,10 @@ int main(int argc, char* args[]) {
         return displayMazeCode;
     }
 
-
+    bool running = true;
+    while (running) {
+        running = SDL_Handle.runSim();
+    }
 
 	return 0;
 }
